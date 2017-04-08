@@ -1,0 +1,166 @@
+const int in1 = 2;
+const int in2 = 4;
+const int in3 = 7;
+const int in4 = 3;
+#include <IRremote.h>
+
+int IRpin = 11;  // pin for the IR sensor
+int LED = 13;    // LED pin
+IRrecv irrecv(IRpin);
+decode_results results;
+
+boolean LEDon = true; // initializing LEDon as true
+
+
+const int trig = 5;
+const int echo = 6;
+long ssure, yol;
+int hiz = 30;
+boolean saatYonu ;
+void setup() {
+
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
+
+
+
+  Serial.begin(9600);
+  irrecv.enableIRIn(); // Start the receiver
+  pinMode(LED, OUTPUT);
+}
+
+void loop() {
+  results.value = 0 ;
+  if (irrecv.decode(&results))
+  {
+
+    irrecv.resume();   // Receive the next value
+  }
+
+  switch (results.value)
+  {
+
+    case 3305092678:
+      Serial.println("geri");
+      break;
+
+    case 1972149634:
+      Serial.println("sol");
+      forward();
+
+      delay(10);
+      break;
+
+    case 1400905448:
+      Serial.println("sag");
+      backward();
+      delay(10);
+      break;
+
+    case 3261853764:
+      Serial.println("ileri");
+      delay(10);
+      break;
+
+
+    default:
+      delay(10);
+      digitalWrite(LED, HIGH);
+
+  }
+
+}
+
+void forward() {
+  saatYonu = true;
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+
+  delay (hiz);
+
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+
+  delay (hiz);
+
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+
+  delay (hiz);
+
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+
+  delay (hiz);
+}
+
+void backward() {
+  saatYonu = false;
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+
+  delay (hiz);
+
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+
+  delay (hiz);
+
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+
+  delay (hiz);
+
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+
+  delay (hiz);
+}
+
+void stopStep() {
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+}
+
+void mesafe() {
+
+
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  ssure = pulseIn(echo, HIGH);
+
+  yol = ssure / 58;
+  Serial.println(yol);
+  Serial.print("......");
+  Serial.println(saatYonu);
+  delay(2);
+}
+
+
+
